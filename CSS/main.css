@@ -1,0 +1,33 @@
+body {
+  background-color: #00530e;
+  margin: 0;
+  padding: 0;
+}
+
+#game {
+  background-color: #ffffff;
+  height: 800px;
+  width: 1600px;
+  position: relative;
+}
+
+#player {
+  background-color: #000000;
+  position: absolute;
+  bottom: 0;
+}
+
+.tile {
+  background-color: #89d4ff;
+  height: 50px;
+  width: 50px;
+}
+
+.ground {
+  background-color: #944349;
+
+}
+
+.door {
+  background-color: #8400ff;
+}

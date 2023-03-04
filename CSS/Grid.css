@@ -1,0 +1,88 @@
+* body {
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+.room {
+  background-color: #049cc2;
+  height: 902.5px;
+  width: 1900px;
+  display: grid;
+  grid-template-columns: repeat(40, 47.5px);
+  grid-template-rows: repeat(19, 47.5px);
+  position: relative;
+}
+
+#player {
+  background-image: url(/Img/Base-pack/Player/p3_front.png);
+  background-repeat: no-repeat;
+  background-size: 57px;
+  position: absolute;
+  bottom: 0;
+}
+
+.tile {
+  background-size: 47.5px;
+}
+
+.ground {
+  background-image: url(/Img/Base-pack/Tiles/grassMid.png);
+  grid-column: 1 / 41;
+  grid-row: 19;
+}
+
+.top {
+  background-image: url(/Img/Base-pack/Tiles/grassMid.png);
+  grid-column: 1 / 41;
+  grid-row: 1;
+}
+
+.sideL {
+  background-image: url(/Img/Base-pack/Tiles/grassCenter.png);
+  grid-column: 40;
+  grid-row: 1 / 20;
+}
+
+.sideR {
+  background-image: url(/Img/Base-pack/Tiles/grassCenter.png);
+  grid-column: 1;
+  grid-row: 1 / 20;
+}
+
+.Obt1 {
+  background-image: url(/Img/Base-pack/Tiles/grassMid.png);
+  grid-column: 16 / 41;
+  grid-row: 18;
+}
+
+.Obt2 {
+  background-image: url(/Img/Base-pack/Tiles/grassMid.png);
+  grid-column: 1 / 13;
+  grid-row: 15 ;
+}
+
+.Obt3 {
+  background-image: url(/Img/Base-pack/Tiles/grassMid.png);
+  grid-column: 16 / 41;
+  grid-row: 12;
+}
+
+.Obt4 {
+  background-image: url(/Img/Base-pack/Tiles/grassMid.png);
+  grid-column: 1 / 13;
+  grid-row: 9;
+}
+
+.Obt5 {
+  background-image: url(/Img/Base-pack/Tiles/grassMid.png);
+  grid-column: 16 / 41;
+  grid-row: 6;
+}
+
+.door {
+  background-image: url(/Img/Base-pack/Tiles/window.png);
+  background-size: 47.5px;
+  grid-column: 27;
+  grid-row: 5;
+}
