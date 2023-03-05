@@ -1,33 +1,52 @@
-body {
-  background-color: #00530e;
+* body {
   margin: 0;
   padding: 0;
 }
 
-#game {
-  background-color: #ffffff;
-  height: 800px;
-  width: 1600px;
+.game {
+  height: 893px;
+  width: 1880px;
+  display: grid;
+  grid-template-columns: repeat(40, 47px);
+  grid-template-rows: repeat(19, 47px);
   position: relative;
 }
 
-#player {
-  background-color: #000000;
+.player {
+  background-image: url(/Img/Base-pack/Player/p3_front.png);
+  background-repeat: no-repeat;
+  background-size: 57px;
   position: absolute;
   bottom: 0;
 }
 
-.tile {
-  background-color: #89d4ff;
-  height: 50px;
-  width: 50px;
+.platforms  {
+  background-size: 47px;
 }
 
-.ground {
-  background-color: #944349;
-
+.walls {
+  background-size: 47px;
 }
 
-.door {
-  background-color: #8400ff;
+.exit {
+  background-image: url(/Img/Base-pack/Tiles/door_closedMid.png),url(/Img/Base-pack/Tiles/door_closedTop.png);
+  background-size: 47px;
+  background-position: right bottom, left top;
+  background-repeat: no-repeat;
 }
+
+
+
+
+.grass {
+  background-image: url(/Img/Base-pack/bg.png);
+}
+
+.grass .platforms {
+  background-image: url(/Img/Base-pack/Tiles/grassMid.png);
+}
+
+.grass .walls {
+  background-image: url(/Img/Base-pack/Tiles/grassCenter.png);
+}
+
