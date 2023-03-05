@@ -1,3 +1,95 @@
+/************************************/
+/************************************/
+/************GAME SETTINGS***********/
+/************************************/
+/************************************/
+
+/************************************/
+/****************GAME****************/
+/************************************/
+
+class Game {
+  constructor(level) {
+    this.level = level[0];
+    this.levelStyle = level[1];
+    this.playerElm = level[2];
+    this.mapElm = level[3];
+    this.exitElm = level[4];
+
+    this.player;
+    this.exit;
+    this.wallL;
+    this.wallR;
+    this.map;
+  }
+  attachEventListeners() {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "d") {
+        this.player.moveLeft();
+      } else if (e.key === "q") {
+        this.player.moveRight();
+      } else if (e.key === "z") {
+        this.player.jump();
+      } else if (e.key === "s") {
+        this.player.stop();
+      }
+    });
+  }
+  start() {
+    this.map = new Map(this.levelStyle, this.mapElm);
+    this.wallL = new WallL(this.levelStyle);
+    this.wallR = new WallR(this.levelStyle);
+    this.player = new Player(this.playerElm);
+    this.exit = new Exit(this.exitElm);
+console.log(this.map.mapArr)
+    this.attachEventListeners();
+
+   /* this.map.mapArr.forEach(mapElm => {
+      setInterval(() => {
+        this.detectGround(mapElm)
+      })
+    }, 0);  */
+
+    setInterval(() => {
+      this.detectExit();
+      this.detectWalls();
+    }, 0);
+  }
+  detectGround(mapElm) {
+     if (this.player.positionY = mapElm.positionY + mapElm.height 
+      ) {
+        this.player.grounded()
+      console.log("touching ground");
+    } 
+  }
+  detectWalls() {
+    if (this.player.positionX < this.wallL.positionX + this.wallL.width) {
+      console.log("touch left");
+      this.player.stop();
+    } else if (
+      this.player.positionX + this.player.width > this.wallR.positionX
+    ) {
+      console.log("touch right");
+      this.player.stop();
+    }
+  }
+  detectExit() {
+  //  console.log(this.exit.positionY)
+    if (
+      this.player.positionX < this.exit.positionX + this.exit.width &&
+      this.player.positionX + this.player.width > this.exit.positionX &&
+      this.player.positionY < this.exit.positionY + this.exit.height &&
+      this.player.height + this.player.positionY > this.exit.positionY
+    ) {
+      console.log("exit to next level");
+    }
+  }
+}
+
+/************************************/
+/***************PLAYER***************/
+/************************************/
+
 class Player {
   constructor(position) {
     let game = document.querySelector(".game");
@@ -5,8 +97,8 @@ class Player {
     player.classList.add("player");
     game.appendChild(player);
 
-    this.width = 57;
-    this.height = 80;
+    this.width = 50;
+    this.height = 70;
     this.positionX = position.positionX;
     this.positionY = position.positionY;
 
@@ -62,7 +154,7 @@ class Player {
     if (this.isJumping === false) {
       let originalPos = this.positionY;
       let timerJump = setInterval(() => {
-        if (this.positionY > originalPos + 100) {
+        if (this.positionY >= originalPos + 100) {
           this.isGrounded = false;
           clearInterval(timerJump);
           this.fall();
@@ -74,10 +166,12 @@ class Player {
       }, 0);
     }
   }
+  grounded(){
+    this.isGrounded = true;
+  }
   fall() {
     let timerFall = setInterval(() => {
-      if (this.positionY <= 47) {
-        this.isGrounded = true;
+      if (this.isGrounded) {
         this.isJumping = false;
         clearInterval(timerFall);
       } else {
@@ -88,6 +182,10 @@ class Player {
   }
 }
 
+/************************************/
+/*****************MAP****************/
+/************************************/
+
 class Map {
   constructor(style, map) {
     let body = document.querySelector("body");
@@ -95,6 +193,8 @@ class Map {
     game.classList.add("game");
     game.classList.add(style);
     body.appendChild(game);
+
+    this.mapArr = []
 
     map.forEach((element) => {
       console.log(element);
@@ -110,11 +210,25 @@ class Map {
       platformsElm.style.gridColumnStart = element.columnStart;
       platformsElm.style.gridColumnEnd = element.columnEnd;
       platformsElm.style.gridRow = element.row;
+
+      this.blockPos = {
+        width : platforms.offsetWidth,
+        height : platforms.offsetHeight,
+        positionX : platformsElm.offsetLeft,
+        positionY : 1056 - platformsElm.offsetTop - platforms.offsetHeight,
+      }
+      console.log(this.blockPos)
+      this.mapArr.push(this.blockPos)
+      console.log(this.mapArr);
     });
   }
 }
 
-class Walls {
+/************************************/
+/****************WALLS***************/
+/************************************/
+
+class WallL {
   constructor(style) {
     let game = document.querySelector(".game");
     let wallsL = document.createElement("wallsL");
@@ -127,8 +241,16 @@ class Walls {
 
     wallsLElm.style.gridColumn = 1;
     wallsLElm.style.gridRowStart = 1;
-    wallsLElm.style.gridRowEnd = 20;
+    wallsLElm.style.gridRowEnd = 23;
 
+    this.positionX = wallsLElm.offsetLeft;
+    this.width = 48;
+  }
+}
+
+class WallR {
+  constructor(style) {
+    let game = document.querySelector(".game");
     let wallsR = document.createElement("wallsR");
     wallsR.classList.add("walls");
     wallsR.classList.add("R");
@@ -139,9 +261,15 @@ class Walls {
 
     wallsRElm.style.gridColumn = 40;
     wallsRElm.style.gridRowStart = 1;
-    wallsRElm.style.gridRowEnd = 20;
+    wallsRElm.style.gridRowEnd = 23;
+
+    this.positionX = wallsRElm.offsetLeft;
   }
 }
+
+/************************************/
+/****************EXIT****************/
+/************************************/
 
 class Exit {
   constructor(position) {
@@ -155,73 +283,77 @@ class Exit {
     exitElm.style.gridColumn = position.column;
     exitElm.style.gridRowStart = position.rowTop;
     exitElm.style.gridRowEnd = position.rowBot;
-    console.log(exitElm);
-    console.log(exitElm.offsetTop);
 
-    this.width = 47;
+    this.width = 48;
     this.height = 94;
-    this.positionX = 893 - exitElm.offsetTop - this.height;
-    console.log(this.positionX);
+    this.positionX = 1056 - exitElm.offsetTop - this.height;
     this.positionY = exitElm.offsetLeft;
-    console.log(this.positionY);
   }
 }
 
-class Game {
-  constructor(level) {
-    this.level = level[0];
-    this.levelStyle = level[1];
-    this.playerElm = level[2];
-    this.mapElm = level[3];
-    this.exitElm = level[4];
-    console.log(level);
-    this.player;
-    this.exit;
-    this.walls;
-    this.map;
-  }
-  attachEventListeners() {
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "d") {
-        this.player.moveLeft();
-      } else if (e.key === "q") {
-        this.player.moveRight();
-      } else if (e.key === "z") {
-        this.player.jump();
-      } else if (e.key === "s") {
-        this.player.stop();
-      }
-    });
-  }
-  start() {
-    this.map = new Map(this.levelStyle, this.mapElm);
-    this.walls = new Walls(this.levelStyle);
-    this.player = new Player(this.playerElm);
-    this.exit = new Exit(this.exitElm);
-
-    this.attachEventListeners();
-    this.timeExit = setInterval(() => {
-      this.detectExit();
-    }, 10);
-  }
-  detectExit() {
-    if (
-      this.player.positionX < this.exit.positionX + this.exit.width &&
-      this.player.positionX + this.player.width > this.exit.positionX &&
-      this.player.positionY < this.exit.positionY + this.exit.height &&
-      this.player.height + this.player.positionY > this.exit.positionY
-    ) {
-      console.log("exit to next level");
-    }
-  }
-}
+/************************************/
+/************************************/
+/***************LEVELS***************/
+/************************************/
+/************************************/
 
 let level1 = [
   "Level 1",
   "grass",
   {
-    positionX: 47,
-    positionY: 47,
+    positionX: 650,
+    positionY: 80,
+  },
+  [
+    {
+      columnStart: 2,
+      columnEnd: 40,
+      row: 22,
+    },
+    {
+      columnStart: 2,
+      columnEnd: 40,
+      row: 1,
+    },
+    {
+      columnStart: 16,
+      columnEnd: 40,
+      row: 18,
+    },
+    {
+      columnStart: 2,
+      columnEnd: 13,
+      row: 15,
+    },
+    {
+      columnStart: 16,
+      columnEnd: 40,
+      row: 12,
+    },
+    {
+      columnStart: 2,
+      columnEnd: 13,
+      row: 9,
+    },
+    {
+      columnStart: 16,
+      columnEnd: 40,
+      row: 6,
+    },
+  ],
+  {
+    column: 28,
+    rowTop: 20,
+    rowBot: 22,
+  },
+];
+
+let level2 = [
+  "Level 2",
+  "stone",
+  {
+    positionX: 48,
+    positionY: 48,
   },
   [
     {
@@ -266,6 +398,12 @@ let level1 = [
     rowBot: 19,
   },
 ];
+
+/************************************/
+/************************************/
+/************************************/
+/************************************/
+/************************************/
 
 const game = new Game(level1);
 game.start();

@@ -3,34 +3,38 @@
   padding: 0;
 }
 
+body {
+  background-color:  #000;
+
+}
+
 .game {
-  height: 893px;
-  width: 1880px;
+  height: 1056px;
+  width: 1920px;
   display: grid;
-  grid-template-columns: repeat(40, 47px);
-  grid-template-rows: repeat(19, 47px);
+  grid-template-columns: repeat(40, 48px);
+  grid-template-rows: repeat(22, 48px);
   position: relative;
 }
 
 .player {
   background-image: url(/Img/Base-pack/Player/p3_front.png);
-  background-repeat: no-repeat;
-  background-size: 57px;
+  background-size: 50px;
   position: absolute;
   bottom: 0;
 }
 
 .platforms  {
-  background-size: 47px;
+  background-size: 48px;
 }
 
 .walls {
-  background-size: 47px;
+  background-size: 48px;
 }
 
 .exit {
   background-image: url(/Img/Base-pack/Tiles/door_closedMid.png),url(/Img/Base-pack/Tiles/door_closedTop.png);
-  background-size: 47px;
+  background-size: 48px;
   background-position: right bottom, left top;
   background-repeat: no-repeat;
 }
@@ -43,10 +47,25 @@
 }
 
 .grass .platforms {
-  background-image: url(/Img/Base-pack/Tiles/grassMid.png);
+  background-image: url(/Img/Base-pack/Tiles/grassLeft.png), 
+                    url(/Img/Base-pack/Tiles/grassMid.png),
+                    url(/Img/Base-pack/Tiles/grassRight.png);
+  background-repeat: no-repeat, repeat ,no-repeat;
+  background-position: left, center, right;
 }
 
 .grass .walls {
   background-image: url(/Img/Base-pack/Tiles/grassCenter.png);
 }
 
+.stone {
+  background-image: url(/Img/Base-pack/bg.png);
+}
+
+.stone .platforms {
+  background-image: url(/Img/Base-pack/Tiles/castleMid.png);
+}
+
+.stone .walls {
+  background-image: url(/Img/Base-pack/Tiles/castleCenter.png);
+}
