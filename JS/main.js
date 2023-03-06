@@ -21,60 +21,88 @@ class Game {
     this.wallL;
     this.wallR;
     this.map;
+
+    this.upKey = false;
+    this.leftKey = false;
+    this.rightKey = false;
+    this.downKey = false;
   }
-  attachEventListeners() {
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "d") {
-        this.player.moveLeft();
-      } else if (e.key === "q") {
-        this.player.moveRight();
-      } else if (e.key === "z") {
-        this.player.jump();
-      } else if (e.key === "s") {
-        this.player.stop();
-      }
-    });
-  }
+
   start() {
     this.map = new Map(this.levelStyle, this.mapElm);
     this.wallL = new WallL(this.levelStyle);
     this.wallR = new WallR(this.levelStyle);
     this.player = new Player(this.playerElm);
     this.exit = new Exit(this.exitElm);
-console.log(this.map.mapArr)
+    // console.log(this.map.mapArr)
     this.attachEventListeners();
 
-   /* this.map.mapArr.forEach(mapElm => {
+    /* this.map.mapArr.forEach(mapElm => {
       setInterval(() => {
         this.detectGround(mapElm)
       })
     }, 0);  */
 
     setInterval(() => {
-      this.detectExit();
-      this.detectWalls();
+      this.playerMovements();
+      //   this.detectExit();
+      //    this.detectWalls();
     }, 0);
   }
+  attachEventListeners() {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "d") {
+        this.rightKey = true;
+        console.log("dddd");
+      } else if (e.key === "q") {
+        this.leftKey = true;
+      } else if (e.key === "z") {
+        this.upKey = true;
+      } else if (e.key === "s") {
+        this.downKey = true;
+      }
+    });
+    document.addEventListener("keyup", (e) => {
+      if (e.key === "d") {
+        this.rightKey = false;
+        console.log("no dddd");
+      } else if (e.key === "q") {
+        this.leftKey = false;
+      } else if (e.key === "z") {
+        this.upKey = false;
+      } else if (e.key === "s") {
+        this.downKey = false;
+      }
+    });
+  }
+  playerMovements() {
+    if ((!this.leftKey && !this.rightKey) || (this.leftKey && this.rightKey)) {
+      //  this.player.friction()
+    } else if (this.rightKey) {
+      this.player.moveRight();
+    } else if (this.leftKey) {
+      this.player.moveLeft();
+    }
+  }
   detectGround(mapElm) {
-     if (this.player.positionY = mapElm.positionY + mapElm.height 
-      ) {
-        this.player.grounded()
+    if ((this.player.positionY = mapElm.positionY + mapElm.height)) {
+      this.player.grounded();
       console.log("touching ground");
-    } 
+    }
   }
   detectWalls() {
     if (this.player.positionX < this.wallL.positionX + this.wallL.width) {
       console.log("touch left");
       this.player.stop();
     } else if (
-      this.player.positionX + this.player.width > this.wallR.positionX
+      this.player.positionX + this.player.width >
+      this.wallR.positionX
     ) {
       console.log("touch right");
       this.player.stop();
     }
   }
   detectExit() {
-  //  console.log(this.exit.positionY)
     if (
       this.player.positionX < this.exit.positionX + this.exit.width &&
       this.player.positionX + this.player.width > this.exit.positionX &&
@@ -109,6 +137,10 @@ class Player {
     this.playerElm.style.left = this.positionX + "px";
     this.playerElm.style.bottom = this.positionY + "px";
 
+    this.xSpeed = 0;
+    this.ySpeed = 0;
+    this.friction = 0.6;
+    this.maxSpeed = 3;
     this.gravity = 0.95;
 
     this.isGrounded = true;
@@ -118,67 +150,39 @@ class Player {
     this.isGoingLeft = false;
     this.timeGoingLeft;
   }
+  gravity() {
+    this.ySpeed = -3;
+    this.positionY += this.ySpeed;
+    this.playerElm.style.bottom = this.positionY + "px";
+  }
+  friction() {
+    console.log("friction");
+    this.xSpeed *= this.friction;
+    this.positionX += this.xSpeed;
+    this.playerElm.style.left = this.positionX + "px";
+  }
   moveRight() {
-    if (this.isGoingLeft) {
-      clearInterval(this.timeGoingLeft);
-      this.isGoingLeft = false;
+    if (this.xSpeed < this.maxSpeed) {
+      this.xSpeed++;
+    } else {
+      this.xSpeed = this.maxSpeed;
     }
-    if (this.isGoingRight === false) {
-      this.isGoingRight = true;
-      this.timeGoingRight = setInterval(() => {
-        this.positionX -= 2;
-        this.playerElm.style.left = this.positionX + "px";
-      }, 0);
-    }
+    this.positionX += this.xSpeed;
+    this.playerElm.style.left = this.positionX + "px";
   }
   moveLeft() {
-    if (this.isGoingRight) {
-      clearInterval(this.timeGoingRight);
-      this.isGoingRight = false;
+    if (this.xSpeed > -this.maxSpeed) {
+      this.xSpeed--;
+    } else {
+      this.xSpeed = -this.maxSpeed;
     }
-    if (this.isGoingLeft === false) {
-      this.isGoingLeft = true;
-      this.timeGoingLeft = setInterval(() => {
-        this.positionX += 2;
-        this.playerElm.style.left = this.positionX + "px";
-      }, 0);
-    }
-  }
-  stop() {
-    clearInterval(this.timeGoingRight);
-    clearInterval(this.timeGoingLeft);
-    this.isGoingLeft = false;
-    this.isGoingRight = false;
+    this.positionX += this.xSpeed;
+    this.playerElm.style.left = this.positionX + "px";
   }
   jump() {
-    if (this.isJumping === false) {
-      let originalPos = this.positionY;
-      let timerJump = setInterval(() => {
-        if (this.positionY >= originalPos + 100) {
-          this.isGrounded = false;
-          clearInterval(timerJump);
-          this.fall();
-        } else {
-          this.isJumping = true;
-          this.positionY = (this.positionY + 10) * this.gravity;
-          this.playerElm.style.bottom = this.positionY + "px";
-        }
-      }, 0);
-    }
-  }
-  grounded(){
-    this.isGrounded = true;
-  }
-  fall() {
-    let timerFall = setInterval(() => {
-      if (this.isGrounded) {
-        this.isJumping = false;
-        clearInterval(timerFall);
-      } else {
-        this.positionY = this.positionY - 1;
-        this.playerElm.style.bottom = this.positionY + "px";
-      }
-    }, 0);
+    this.ySpeed = 15;
+    this.positionY += this.ySpeed;
+    this.playerElm.style.bottom = this.positionY + "px";
   }
 }
 
@@ -194,10 +198,9 @@ class Map {
     game.classList.add(style);
     body.appendChild(game);
 
-    this.mapArr = []
+    this.mapArr = [];
 
     map.forEach((element) => {
-      console.log(element);
       let game = document.querySelector(".game");
       let platforms = document.createElement("platorms");
       platforms.classList.add("platforms");
@@ -212,14 +215,12 @@ class Map {
       platformsElm.style.gridRow = element.row;
 
       this.blockPos = {
-        width : platforms.offsetWidth,
-        height : platforms.offsetHeight,
-        positionX : platformsElm.offsetLeft,
-        positionY : 1056 - platformsElm.offsetTop - platforms.offsetHeight,
-      }
-      console.log(this.blockPos)
-      this.mapArr.push(this.blockPos)
-      console.log(this.mapArr);
+        width: platforms.offsetWidth,
+        height: platforms.offsetHeight,
+        positionX: platformsElm.offsetLeft,
+        positionY: 1056 - platformsElm.offsetTop - platforms.offsetHeight,
+      };
+      this.mapArr.push(this.blockPos);
     });
   }
 }
@@ -358,8 +359,13 @@ let level2 = [
   [
     {
       columnStart: 2,
+      columnEnd: 16,
+      row: 22,
+    },
+    {
+      columnStart: 18,
       columnEnd: 40,
-      row: 19,
+      row: 22,
     },
     {
       columnStart: 2,
@@ -394,14 +400,21 @@ let level2 = [
   ],
   {
     column: 28,
-    rowTop: 17,
-    rowBot: 19,
+    rowTop: 4,
+    rowBot: 6,
   },
+  [
+    {
+      columnStart: 16,
+      columnEnd: 19,
+      row: 19,
+    },
+  ],
 ];
 
 /************************************/
 /************************************/
-/************************************/
+/****************HUD*****************/
 /************************************/
 /************************************/
 

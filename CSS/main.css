@@ -5,15 +5,15 @@
 
 body {
   background-color:  #000;
-
+  display: flex;
+  justify-content: center;
 }
 
 .game {
-  height: 1056px;
-  width: 1920px;
+  flex-shrink: 10; 
   display: grid;
-  grid-template-columns: repeat(40, 48px);
-  grid-template-rows: repeat(22, 48px);
+  grid-template-columns: repeat(40, 45px);
+  grid-template-rows: repeat(22, 45px);
   position: relative;
 }
 
@@ -25,17 +25,17 @@ body {
 }
 
 .platforms  {
-  background-size: 48px;
+  background-size: 45px;
 }
 
 .walls {
-  background-size: 48px;
+  background-size: 45px;
 }
 
 .exit {
   background-image: url(/Img/Base-pack/Tiles/door_closedMid.png),url(/Img/Base-pack/Tiles/door_closedTop.png);
-  background-size: 48px;
-  background-position: right bottom, left top;
+  background-size: 45px;
+  background-position: bottom, top;
   background-repeat: no-repeat;
 }
 
@@ -57,6 +57,8 @@ body {
 .grass .walls {
   background-image: url(/Img/Base-pack/Tiles/grassCenter.png);
 }
+
+
 
 .stone {
   background-image: url(/Img/Base-pack/bg.png);
